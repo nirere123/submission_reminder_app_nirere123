@@ -1,30 +1,54 @@
 #!/bin/bash
-read -p "What is your name?: " name
- dir=submission_reminder_$name
 
-mkdir -p  ./$dir/app ./$dir/modules ./$dir/assets ./$dir/config 
- chmod +x  *.sh
-  
-#add content of reminder.sh
-cat  << 'EOF' > "$dir/app/reminder.sh"
+# Prompt for user name
+read -p "Enter your user name: " user_name
+dir="submission_reminder_${user_name}"
+
+# Create directories
+mkdir -p "$dir/app" 
+mkdir -p "$dir/config" 
+mkdir -p "$dir/modules" 
+mkdir -p "$dir/assets"
+
+
+# config.env
+cat << 'EOF' > "$dir/config/config.env" 
+ASSIGNMENT="Shell Navigation"
+DAYS_REMAINING=2
+EOF
+# submissions.txt
+cat << EOF > "$dir/assets/submissions.txt"
+#submissions.txt
+student, assignment, submission status
+Chinemerem, Shell Navigation, not submitted
+Chiagoziem, Git, submitted
+Divine, Shell Navigation, not submitted
+Anissa, Shell Basics, submitted
+#add 5 more students
+MILO, Shell Navigation,  submitted
+DIPO, Git, submitted
+MOSES, Shell Navigation, not submitted
+LOLO, Shell Basics, submitted
+EOF
+# reminder.sh
+cat << 'EOF' > "$dir/app/reminder.sh" 
 #!/bin/bash
-
-# Source environment variables and helper functions
 source ./config/config.env
 source ./modules/functions.sh
 
-# Path to the submissions file
+# 
 submissions_file="./assets/submissions.txt"
 
-# Print remaining time and run the reminder function
+# 
 echo "Assignment: $ASSIGNMENT"
 echo "Days remaining to submit: $DAYS_REMAINING days"
 echo "--------------------------------------------"
 
 check_submissions $submissions_file
+
 EOF
-#add content  of function.sh
-cat  << 'EOF' > "$dir/app/function.sh"
+# functions.sh
+cat << 'EOF' > "$dir/modules/functions.sh"
 #!/bin/bash
 
 # Function to read submissions file and output students who have not submitted
@@ -34,7 +58,7 @@ function check_submissions {
 
     # Skip the header and iterate through the lines
     while IFS=, read -r student assignment status; do
-        # Remove leading and trailing whitespace
+# Remove leading and trailing whitespace
         student=$(echo "$student" | xargs)
         assignment=$(echo "$assignment" | xargs)
         status=$(echo "$status" | xargs)
@@ -43,42 +67,20 @@ function check_submissions {
         if [[ "$assignment" == "$ASSIGNMENT" && "$status" == "not submitted" ]]; then
             echo "Reminder: $student has not submitted the $ASSIGNMENT assignment!"
         fi
-    done < <(tail -n +2 "$submissions_file") # Skip the header
+    done < <(tail -n +2 "$submissions_file") #skip the header
 }
+
 EOF
-#add content of submissions
-cat  << 'EOF' > "$dir/app/submission.sh"
-student, assignment, submission status
-Chinemerem, Shell Navigation, not submitted
-Chiagoziem, Git, submitted
-Divine, Shell Navigation, not submitted
-Anissa, Shell Basics, submitted
-#add  5 more records
-Moses, Shell Navigation, not submitted
-Cami, Git, submitted
-Ghislaine, Shell Navigation, not submitted
-Maellene, Shell Basics, submitted
-EOF
-#add content of  config.env
-cat  << 'EOF' > "$dir/app/config.env"
-# This is the config file
-ASSIGNMENT="Shell Navigation"
-DAYS_REMAINING=2
-EOF
-#create statup.sh
-cat  << 'EOF' > "$dir/app/startup.sh"
-#/bin/bash
+
+# startup.sh
+cat << 'EOF' > "$dir/startup.sh"
+#!/bin/bash
 source config/config.env
 source modules/functions.sh
 bash app/reminder.sh
 EOF
 
-#Make scripts executable 
+# Make scripts executable
 find "$dir" -type f -name "*.sh" -exec chmod +x {} \;
 
-#add a file called startup.sh
-source config/config.env
-source modules/functions.sh
-bash app/reminder.sh
-
-echo "Environment setup complete in  '$dir'."
+echo " Environment setup created in '$dir'."
