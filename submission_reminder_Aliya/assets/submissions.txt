@@ -1,0 +1,13 @@
+#submissions.txt
+student, assignment, submission status
+Chinemerem, Shell Navigation, not submitted
+Chiagoziem, Git, submitted
+Divine, Shell Navigation, not submitted
+Anissa, Shell Basics, submitted
+#add 5 more students
+MILO, Shell Navigation, not submitted
+DIPO, Git, not submitted
+MOSES, Shell Navigation, not submitted
+LOLO, Shell Basics, submitted
+Adda, Shell Basics, not submitted
+Alia, Git, not submitted
